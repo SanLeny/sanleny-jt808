@@ -1,0 +1,25 @@
+spring:
+  profiles:
+    active: @activatedProperties@
+  application:
+    name: jt808-server
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    default-property-inclusion: non_null
+    time-zone: GMT+8
+logging:
+  config: classpath:logback-spring.xml
+snowflake:
+  workerId: 1
+  datacenterId: 1
+sanleny:
+  jt808:
+    protocol:
+      process:
+        LINK_HEARTBEAT: cn.sanleny.jt808.server.protocol.process.LinkHeartbeatProcess
+        REGISTER_UP: cn.sanleny.jt808.server.protocol.process.RegisterProcess
+        LOGOUT: cn.sanleny.jt808.server.protocol.process.LogoutProcess
+        AUTHENTICATION: cn.sanleny.jt808.server.protocol.process.AuthenticationProcess
+        LOCATION_INFO_UP: cn.sanleny.jt808.server.protocol.process.LocationInfoProcess
+        REQUEST_TIME: cn.sanleny.jt808.server.protocol.process.RequestTimeProcess
+        DATA_TRANSMISSION_UP: cn.sanleny.jt808.server.protocol.process.DataTransmissionProcess

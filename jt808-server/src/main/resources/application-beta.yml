@@ -1,0 +1,15 @@
+spring:
+  redis:
+    database: 0
+    host: 127.0.0.1
+    port: 6379
+jt808:
+  read-timeout: 15  #读超时
+  bind_address: 0.0.0.0
+  bind_port: 8864
+  netty:
+    leak_detector_level: DISABLED
+    boss_group_thread_count: 1
+    worker_group_thread_count: 8
+    biz_group_thread_count: 100
+
