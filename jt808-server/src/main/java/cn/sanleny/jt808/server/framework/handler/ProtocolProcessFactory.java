@@ -23,6 +23,8 @@ public class ProtocolProcessFactory {
             ProtocolProcess bean = (ProtocolProcess) Class.forName(protocolProcessProperties.getProcess().get(type)).getDeclaredConstructor().newInstance();
             Application.applicationContext.getAutowireCapableBeanFactory().autowireBean(bean);
             return bean;
+        } catch (NullPointerException e){
+            return null;
         } catch (Exception e) {
             log.error("getInstance error:{} ",e.toString(), e);
         }

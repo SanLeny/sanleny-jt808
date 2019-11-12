@@ -1,6 +1,7 @@
 package cn.sanleny.jt808.server.protocol.process;
 
 import cn.sanleny.jt808.server.framework.constants.Jt808Constants;
+import cn.sanleny.jt808.server.framework.constants.Jt808MessageType;
 import cn.sanleny.jt808.server.framework.handler.Jt808Message;
 import cn.sanleny.jt808.server.protocol.entity.Register;
 import cn.sanleny.jt808.server.framework.handler.AbstractProtocolProcess;
@@ -24,6 +25,7 @@ public class RegisterProcess extends AbstractProtocolProcess {
     protected Jt808Message process(Jt808Message message) {
         if(message.getReplyCode() != Jt808Constants.RESP_SUCCESS) return message;
         Register msg = (Register) message;
+        msg.setReplayType(Jt808MessageType.REGISTER_DOWN);
         //TODO 注册逻辑,鉴权码暂时写死
         msg.setReplayToken("123");
 //        log.debug("终端注册:{}",msg);

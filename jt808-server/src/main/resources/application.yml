@@ -23,3 +23,7 @@ sanleny:
         LOCATION_INFO_UP: cn.sanleny.jt808.server.protocol.process.LocationInfoProcess
         REQUEST_TIME: cn.sanleny.jt808.server.protocol.process.RequestTimeProcess
         DATA_TRANSMISSION_UP: cn.sanleny.jt808.server.protocol.process.DataTransmissionProcess
+        DATA_TRANSMISSION_DOWN: cn.sanleny.jt808.server.protocol.process.inverted.ResponseTimeProcess
+        REQUEST_TIME_DOWN: cn.sanleny.jt808.server.protocol.process.inverted.ResponseTimeProcess
+        RESPONSE_COMMON_DOWN: cn.sanleny.jt808.server.protocol.process.inverted.ResponseCommonProcess
+        REGISTER_DOWN: cn.sanleny.jt808.server.protocol.process.inverted.ResponseRegisterProcess
