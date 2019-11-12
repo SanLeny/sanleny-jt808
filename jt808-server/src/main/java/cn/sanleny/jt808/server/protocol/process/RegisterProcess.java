@@ -26,7 +26,7 @@ public class RegisterProcess extends AbstractProtocolProcess {
         Register msg = (Register) message;
         //TODO 注册逻辑,鉴权码暂时写死
         msg.setReplayToken("123");
-        log.debug("终端注册:{}",msg);
+//        log.debug("终端注册:{}",msg);
         return msg;
     }
 

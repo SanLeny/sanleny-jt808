@@ -37,12 +37,11 @@ public class Jt808Encoder extends MessageToMessageEncoder<Jt808Message> {
     }
 
     private ByteBuf doEncode(ChannelHandlerContext ctx, Jt808Message message) {
-        log.debug("<<< 响应 message:{}", message);
-        switch (message.getHeader().getMessageType()){
+        switch (message.getReplayType()){
             case REQUEST_TIME_DOWN:
-            case DATA_TRANSMISSION_UP:
+            case DATA_TRANSMISSION_DOWN:
                 return encodeServerTimeMesssage(ctx, message);
-            case REGISTER_UP:
+            case REGISTER_DOWN:
                 return encodeServerRegisterMessage(ctx,message);
             default:
                 return encodeServerCommontMessage(ctx, message);
@@ -56,6 +55,7 @@ public class Jt808Encoder extends MessageToMessageEncoder<Jt808Message> {
      * @return
      */
     private ByteBuf encodeServerCommontMessage(ChannelHandlerContext ctx, Jt808Message message) {
+        log.debug("<<< 响应通用 message:{}", message);
         //消息体
         byte[] msgBody = ArrayUtil.addAll(Convert.shortToBytes((short) message.getHeader().getFlowId()) // 应答流水号
                 , Convert.shortToBytes((short) message.getHeader().getMessageType().value()) // 应答ID,对应的终端消息的ID
@@ -76,6 +76,7 @@ public class Jt808Encoder extends MessageToMessageEncoder<Jt808Message> {
      * @return
      */
     private ByteBuf encodeServerTimeMesssage(ChannelHandlerContext ctx, Jt808Message message) {
+        log.debug("<<< 响应时间包 message:{}", message);
         String msgBody = DateUtil.format(message.getReplayTime(),"yyMMddHHmmss");
         int msgBodyByteSize = 6;
         int msgBodyProps = Jt808Utils.generateMsgBodyProps(msgBodyByteSize, Jt808Constants.ENCTYPTION_TYPE, Boolean.FALSE, 0);
@@ -92,6 +93,7 @@ public class Jt808Encoder extends MessageToMessageEncoder<Jt808Message> {
      * @return
      */
     private ByteBuf encodeServerRegisterMessage(ChannelHandlerContext ctx, Jt808Message message) {
+        log.debug("<<< 响应注册应答包 message:{},replayToken:{}", message,message.getReplayToken());
         // 消息体
         byte[] msgBody = ArrayUtil.addAll(Convert.shortToBytes((short) message.getHeader().getFlowId()) // 应答流水号
                 , new byte[]{message.getReplyCode()}
