@@ -24,7 +24,7 @@ public class RequestTimeProcess extends AbstractProtocolProcess {
     protected Jt808Message process(Jt808Message message) {
         message.setReplayType(Jt808MessageType.REQUEST_TIME_DOWN);
         message.setReplayTime(DateUtil.date());
-        log.debug(">>>终端请求时间：{}",message);
+//        log.debug(">>>终端请求时间：{}",message);
         return message;
     }
 }

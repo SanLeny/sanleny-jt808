@@ -33,7 +33,7 @@ public class Jt808Message {
      */
     protected byte replyCode;               //通用应答code
     protected Date replayTime;              //通用应答时间
-    protected Jt808MessageType replayType;  //通用应答type
+    protected Jt808MessageType replayType = Jt808MessageType.RESPONSE_COMMON_DOWN;;  //通用应答type
     protected String replayToken;           //鉴权码
 
     private String hex;   //去除标志位后的转义16进制字符
