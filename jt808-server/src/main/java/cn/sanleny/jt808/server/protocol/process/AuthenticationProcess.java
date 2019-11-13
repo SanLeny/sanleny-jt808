@@ -34,7 +34,7 @@ public class AuthenticationProcess extends AbstractProtocolProcess {
         log.debug(">>>终端鉴权：{}",msg);
         RSAPrivateKey privateKey = RsaKeyUtil.getRsaPrivateKey();
         RSA rsa = new RSA(privateKey, null);
-        if(!StrUtil.equals(msg.getAuthToken(),rsa.encryptBase64(StrUtil.bytes(message.getHeader().getTerminalPhone(), CharsetUtil.CHARSET_GBK), KeyType.PrivateKey))){
+        if(!StrUtil.equals(msg.getAuthToken(),rsa.encryptBcd(message.getHeader().getTerminalPhone(), KeyType.PrivateKey))){
             msg.setReplyCode(Jt808Constants.RESP_FAILURE);
             log.error("终端鉴权失败，鉴权验证码：{}" , msg.getAuthToken());
         }

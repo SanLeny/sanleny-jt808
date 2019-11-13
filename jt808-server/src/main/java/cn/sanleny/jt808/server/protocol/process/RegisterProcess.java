@@ -34,7 +34,7 @@ public class RegisterProcess extends AbstractProtocolProcess {
         Register msg = (Register) message;
         RSAPrivateKey privateKey = RsaKeyUtil.getRsaPrivateKey();
         RSA rsa = new RSA(privateKey, null);
-        String tocken = rsa.encryptBase64(StrUtil.bytes(message.getHeader().getTerminalPhone(), CharsetUtil.CHARSET_GBK), KeyType.PrivateKey);
+        String tocken = rsa.encryptBcd(message.getHeader().getTerminalPhone(), KeyType.PrivateKey);
         msg.setReplayToken(tocken);
         msg.setReplayType(Jt808MessageType.REGISTER_DOWN);
         return msg;
