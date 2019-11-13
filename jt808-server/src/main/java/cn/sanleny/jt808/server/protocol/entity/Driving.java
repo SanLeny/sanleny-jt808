@@ -26,10 +26,10 @@ public class Driving extends DataTransmission {
     private int uploadType;		// 上传类型：0-主动上传；1-查询上传
     // 3. OBD报警标志位 byte[7-10] BYTE
     @Jt808Field(index = 7,length = 4)
-    private String alarmFlag;		// OBD报警标志位
+    private int alarmFlag;		// OBD报警标志位
     // 4. OBD状态标志位 byte[11-14] BYTE
     @Jt808Field(index = 11,length = 4)
-    private String statusFlag;		// OBD状态标志位
+    private int statusFlag;		// OBD状态标志位
     // 5. 瞬时速度 byte[15-16] BYTE
     @Jt808Field(index = 15,length = 2)
     @Jt808Math(aClass = NumberUtil.class, method = "div")
