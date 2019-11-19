@@ -26,15 +26,17 @@ public class Jt808Utils {
 
     /**
      * 校验码指从消息头开始，同后一字节异或，直到效验码前一个字节，占用一个字节
-     * @param buf
+     * @param bs
+     * @param start
+     * @param end
      * @return
      */
-    public static byte getCheckSum(ByteBuf buf) {
-        byte sum = 0;
-        for (int i = 0; i < buf.writerIndex()-1; i++) {
-            sum = (byte) (sum ^ buf.getByte(i));
+    public static int getCheckSum(byte[] bs, int start, int end) {
+        int cs = 0;
+        for (int i = start; i < end; i++) {
+            cs ^= bs[i];
         }
-        return sum;
+        return cs;
     }
 
     /**

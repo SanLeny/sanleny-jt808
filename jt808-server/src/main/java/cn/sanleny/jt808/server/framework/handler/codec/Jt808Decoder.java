@@ -65,8 +65,10 @@ public class Jt808Decoder extends ReplayingDecoder<DecoderState> {
                 }
             case CHECK_MESSAGE:
                 checkSum = buf.getByte(buf.writerIndex() - 1);//校验码
-                byte calCheckSum = Jt808Utils.getCheckSum(buf);
-                if(checkSum != checkSum){
+                byte[] content = new byte[buf.writerIndex()];
+                buf.readBytes(content);
+                int calCheckSum = Jt808Utils.getCheckSum(content,0,content.length-1);
+                if(checkSum != calCheckSum){
                     log.error(">>> 校验码错误: checkSum:{},calCheckSum:{}",checkSum,calCheckSum);
                     out.add(invalidMessage(new GlobalFallbackException("校验码错误: checkSum:" + checkSum + ",calCheckSum:" + calCheckSum)));
                     return;

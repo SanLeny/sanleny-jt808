@@ -7,12 +7,11 @@ import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.CharsetUtil;
 import cn.hutool.core.util.HexUtil;
 import cn.hutool.core.util.StrUtil;
-import cn.sanleny.jt808.server.framework.handler.Jt808Message;
 import cn.sanleny.jt808.server.framework.constants.Jt808Constants;
 import cn.sanleny.jt808.server.framework.constants.Jt808MessageType;
+import cn.sanleny.jt808.server.framework.handler.Jt808Message;
 import cn.sanleny.jt808.server.framework.utils.Jt808Utils;
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToMessageEncoder;
@@ -121,12 +120,12 @@ public class Jt808Encoder extends MessageToMessageEncoder<Jt808Message> {
         //转义
         byte[] descape = Jt808Utils.descape(headerAndBody);
         // 校验码
-        byte checkSum = Jt808Utils.getCheckSum(Unpooled.wrappedBuffer(headerAndBody));
+        int checkSum = Jt808Utils.getCheckSum(descape,0,descape.length);
         // 连接
         byte[] resBytes = ArrayUtil.addAll(
                 new byte[]{Jt808Constants.PKG_DELIMITER}
                 , descape
-                , new byte[]{checkSum}
+                , new byte[]{Convert.intToByte(checkSum)}
                 , new byte[]{Jt808Constants.PKG_DELIMITER} // 0x7e
         );
         log.debug("<<< 响应终端：{}", HexUtil.encodeHexStr(resBytes,Boolean.FALSE));
