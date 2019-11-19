@@ -117,10 +117,10 @@ public class Jt808Encoder extends MessageToMessageEncoder<Jt808Message> {
      */
     private ByteBuf getByteBuf(ChannelHandlerContext ctx, byte[] msgHeaders, byte[] msgBodys) {
         byte[] headerAndBody = ArrayUtil.addAll(msgHeaders, msgBodys);
-        //转义
-        byte[] descape = Jt808Utils.descape(headerAndBody);
         // 校验码
         int checkSum = Jt808Utils.getCheckSum(headerAndBody,0,headerAndBody.length);
+        //转义
+        byte[] descape = Jt808Utils.descape(headerAndBody);
         // 连接
         byte[] resBytes = ArrayUtil.addAll(
                 new byte[]{Jt808Constants.PKG_DELIMITER}
