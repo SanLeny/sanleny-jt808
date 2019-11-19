@@ -120,7 +120,7 @@ public class Jt808Encoder extends MessageToMessageEncoder<Jt808Message> {
         //转义
         byte[] descape = Jt808Utils.descape(headerAndBody);
         // 校验码
-        int checkSum = Jt808Utils.getCheckSum(descape,0,descape.length);
+        int checkSum = Jt808Utils.getCheckSum(headerAndBody,0,headerAndBody.length);
         // 连接
         byte[] resBytes = ArrayUtil.addAll(
                 new byte[]{Jt808Constants.PKG_DELIMITER}
