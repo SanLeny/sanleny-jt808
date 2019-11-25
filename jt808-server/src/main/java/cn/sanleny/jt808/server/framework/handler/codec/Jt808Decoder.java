@@ -15,6 +15,9 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
 
+import static cn.sanleny.jt808.server.framework.utils.Jt808Utils.parseIntFromBytes;
+
+
 /**
  * JT808 解码
  * 转义规则：
@@ -41,7 +44,7 @@ public class Jt808Decoder extends ReplayingDecoder<DecoderState> {
 
     private ByteBuf buf;
     private String hex;
-    private byte checkSum;
+    private int checkSum;
     private Jt808FixedHeader header;
 
     public Jt808Decoder() {
@@ -66,7 +69,7 @@ public class Jt808Decoder extends ReplayingDecoder<DecoderState> {
             case CHECK_MESSAGE:
                 checkSum = buf.getByte(buf.writerIndex() - 1);//校验码
                 byte[] content = new byte[buf.writerIndex()];
-                buf.readBytes(content);
+                buf.getBytes(0,content);
                 int calCheckSum = Jt808Utils.getCheckSum(content,0,content.length-1);
                 if(checkSum != calCheckSum){
                     log.error(">>> 校验码错误: checkSum:{},calCheckSum:{}",checkSum,calCheckSum);
@@ -126,11 +129,11 @@ public class Jt808Decoder extends ReplayingDecoder<DecoderState> {
     public static Jt808FixedHeader getMsgHeader(byte[] jt808Data) {
         Jt808FixedHeader header =new Jt808FixedHeader();
         //[0-1] 字节为 消息ID
-        Integer msgId = Jt808Utils.parseIntFromBytes(jt808Data,0,2);
+        Integer msgId = parseIntFromBytes(jt808Data,0,2);
         header.setMessageType(Jt808MessageType.valueOf(msgId));
 
         //[2-3] 字节为 消息体属性
-        Integer msgBodyPropsField = Jt808Utils.parseIntFromBytes(jt808Data,2,2);
+        Integer msgBodyPropsField = parseIntFromBytes(jt808Data,2,2);
         header.setMsgBodyPropsField(msgBodyPropsField);
         // ---------------------------------------------------------------------
         //| 15 | 14 | 13 | 12 | 11 | 10 | 9 | 8 | 7 | 6 | 5 | 4 | 3 | 2 | 1 | 0 |
@@ -156,19 +159,19 @@ public class Jt808Decoder extends ReplayingDecoder<DecoderState> {
         header.setTerminalPhone(BCD.bcdToStr(tmp));
 
         //[10-11] 字节为 消息流水号
-        header.setFlowId(Jt808Utils.parseIntFromBytes(jt808Data,10,2));
+        header.setFlowId(parseIntFromBytes(jt808Data,10,2));
 
         //[12-15] 字节为 消息包封装项
         if(hasSubPackage){//有子包信息
             // 消息包封装项字段
-            int packageInfoField = Jt808Utils.parseIntFromBytes(jt808Data,12,4);
+            int packageInfoField = parseIntFromBytes(jt808Data,12,4);
             header.setPackageInfoField(packageInfoField);
             // byte[0-1] 消息包总数
-            int totalSubPackage = Jt808Utils.parseIntFromBytes(jt808Data,12,2);
+            int totalSubPackage = parseIntFromBytes(jt808Data,12,2);
             header.setTotalSubPackage(totalSubPackage);
 
             // byte[2-3] 包序号    从 1 开始
-            int subPackageSeq = Jt808Utils.parseIntFromBytes(jt808Data,14,2);
+            int subPackageSeq = parseIntFromBytes(jt808Data,14,2);
             header.setSubPackageSeq(subPackageSeq);
         }
         return header;

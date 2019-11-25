@@ -92,7 +92,8 @@ public class Jt808Encoder extends MessageToMessageEncoder<Jt808Message> {
      * @return
      */
     private ByteBuf encodeServerRegisterMessage(ChannelHandlerContext ctx, Jt808Message message) {
-        log.debug("<<< 响应注册应答包 message:{},replayToken:{}", message,message.getReplayToken());
+        log.debug("<<< 响应注册应答包 message:{},replayToken:{},checkSum:{}", message,message.getReplayToken(),
+                message.getCheckSum());
         // 消息体
         byte[] msgBody = ArrayUtil.addAll(Convert.shortToBytes((short) message.getHeader().getFlowId()) // 应答流水号
                 , new byte[]{message.getReplyCode()}
@@ -118,14 +119,14 @@ public class Jt808Encoder extends MessageToMessageEncoder<Jt808Message> {
     private ByteBuf getByteBuf(ChannelHandlerContext ctx, byte[] msgHeaders, byte[] msgBodys) {
         byte[] headerAndBody = ArrayUtil.addAll(msgHeaders, msgBodys);
         // 校验码
-        int checkSum = Jt808Utils.getCheckSum(headerAndBody,0,headerAndBody.length);
+        int checkSum = Jt808Utils.getCheckSum(headerAndBody, 0, headerAndBody.length);
         //转义
         byte[] descape = Jt808Utils.descape(headerAndBody);
         // 连接
         byte[] resBytes = ArrayUtil.addAll(
                 new byte[]{Jt808Constants.PKG_DELIMITER}
                 , descape
-                , new byte[]{Convert.intToByte(checkSum)}
+                ,new byte[]{Convert.intToByte(checkSum)}
                 , new byte[]{Jt808Constants.PKG_DELIMITER} // 0x7e
         );
         log.debug("<<< 响应终端：{}", HexUtil.encodeHexStr(resBytes,Boolean.FALSE));

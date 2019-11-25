@@ -15,7 +15,7 @@ public class Jt808Message {
 
     protected Jt808FixedHeader header;//消息头数据
     protected byte[] msgBodyBytes;  // 消息体字节数组
-    protected byte checkSum;  // 校验码
+    protected int checkSum;  // 校验码
 
     /**
      * 0：成功∕确认<br>
@@ -49,7 +49,7 @@ public class Jt808Message {
         this.throwable = throwable;
     }
 
-    public Jt808Message(Jt808FixedHeader header, byte[] msgBodyBytes, byte checkSum, String hex) {
+    public Jt808Message(Jt808FixedHeader header, byte[] msgBodyBytes, int checkSum, String hex) {
         this.header = header;
         this.msgBodyBytes = msgBodyBytes;
         this.checkSum = checkSum;
