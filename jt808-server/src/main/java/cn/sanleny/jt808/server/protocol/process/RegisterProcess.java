@@ -1,14 +1,12 @@
 package cn.sanleny.jt808.server.protocol.process;
 
-import cn.hutool.core.util.CharsetUtil;
-import cn.hutool.core.util.StrUtil;
 import cn.hutool.crypto.asymmetric.KeyType;
 import cn.hutool.crypto.asymmetric.RSA;
 import cn.sanleny.jt808.server.framework.constants.Jt808Constants;
 import cn.sanleny.jt808.server.framework.constants.Jt808MessageType;
+import cn.sanleny.jt808.server.framework.handler.AbstractProtocolProcess;
 import cn.sanleny.jt808.server.framework.handler.Jt808Message;
 import cn.sanleny.jt808.server.protocol.entity.Register;
-import cn.sanleny.jt808.server.framework.handler.AbstractProtocolProcess;
 import cn.sanleny.jt808.server.utils.RsaKeyUtil;
 import lombok.extern.slf4j.Slf4j;
 
@@ -34,8 +32,8 @@ public class RegisterProcess extends AbstractProtocolProcess {
         Register msg = (Register) message;
         RSAPrivateKey privateKey = RsaKeyUtil.getRsaPrivateKey();
         RSA rsa = new RSA(privateKey, null);
-        String tocken = rsa.encryptBcd(message.getHeader().getTerminalPhone(), KeyType.PrivateKey);
-        msg.setReplayToken(tocken);
+        String token = rsa.encryptBcd(message.getHeader().getTerminalPhone(), KeyType.PrivateKey);
+        msg.setReplayToken(token);
         msg.setReplayType(Jt808MessageType.REGISTER_DOWN);
         return msg;
     }
