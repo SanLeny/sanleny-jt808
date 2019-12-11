@@ -1,6 +1,7 @@
 package cn.sanleny.jt808.server.protocol.process;
 
 import cn.hutool.core.date.DateUtil;
+import cn.sanleny.jt808.server.common.service.KafkaService;
 import cn.sanleny.jt808.server.framework.constants.Jt808Constants;
 import cn.sanleny.jt808.server.framework.constants.Jt808MessageType;
 import cn.sanleny.jt808.server.framework.exception.GlobalFallbackException;
@@ -12,6 +13,7 @@ import cn.sanleny.jt808.server.protocol.entity.Driving;
 import cn.sanleny.jt808.server.protocol.entity.FaultCode;
 import cn.sanleny.jt808.server.protocol.entity.TravelReport;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * 【0x0900】数据上行透传
@@ -21,6 +23,9 @@ import lombok.extern.slf4j.Slf4j;
  **/
 @Slf4j
 public class DataTransmissionProcess extends AbstractProtocolProcess {
+
+    @Autowired
+    private KafkaService kafkaService;
 
     @Override
     protected Jt808Message resolve(Jt808Message message) {
@@ -64,16 +69,19 @@ public class DataTransmissionProcess extends AbstractProtocolProcess {
                 //OBD行车数据
                 Driving driving = (Driving) dataMsg;
                 log.debug("OBD行车数据:{}", driving);
+                kafkaService.send("obd_driving" ,driving);
                 return driving;
             case OBD_TRAVEL_REPORT_DATA:
                 //OBD行程报告数据
                 TravelReport travelReportMsg = (TravelReport) dataMsg;
                 log.debug("OBD行程报告数据:{}",travelReportMsg);
+                kafkaService.send("obd_travelReport" ,travelReportMsg);
                 return travelReportMsg;
             case OBD_FAULT_CODE:
                 //OBD故障码
                 FaultCode faultCodeMsg = (FaultCode) dataMsg;
                 log.debug("OBD故障码:{}",faultCodeMsg);
+                kafkaService.send("obd_faultCode" ,faultCodeMsg);
                 return faultCodeMsg;
         }
         return message;

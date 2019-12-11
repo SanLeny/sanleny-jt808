@@ -3,6 +3,28 @@ spring:
     database: 0
     host: 127.0.0.1
     port: 6379
+#  kafka:
+#    bootstrap-servers: 127.0.0.1:9092
+#    producer:
+#      # broker回复发布确认的方式
+#      acks: all
+#      # 当发送失败时重试几次
+#      retries: 0
+#      # Producer是采用批量的方式来提高发送的吞吐量量的，这里指定批大小，单位字节
+#      batch-size: 16384
+#      # 存放数据的buffer的大小
+#      buffer-memory: 33554432
+#      # 消息数据的序列化器
+#      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+#    consumer:
+#      # 设置消费组
+#      group-id: jt808-consumer-group
+#      # 当各分区下有已提交的offset时，从提交的offset开始消费；无提交的offset时，从头开始消费
+#      auto-offset-reset: earliest
+#      # 如果此值设置为true，consumer会周期性的把当前消费的offset值保存到zookeeper。当consumer失败重启之后将会使用此值作为新开始消费的值
+#      enable-auto-commit: true
+#      # 自动消费offset提交的间隔时间
+#      auto-commit-interval: 1000
 jt808:
   read-timeout: 15  #读超时
   bind_address: 0.0.0.0

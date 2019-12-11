@@ -1,5 +1,6 @@
 package cn.sanleny.jt808.server.protocol.process;
 
+import cn.sanleny.jt808.server.common.service.KafkaService;
 import cn.sanleny.jt808.server.framework.handler.Jt808Message;
 import cn.sanleny.jt808.server.protocol.entity.LocationInfo;
 import cn.sanleny.jt808.server.framework.constants.Jt808Constants;
@@ -20,6 +21,9 @@ public class LocationInfoProcess extends AbstractProtocolProcess {
     @Autowired
     private StringRedisTemplate stringRedisTemplate;
 
+    @Autowired
+    private KafkaService kafkaService;
+
     @Override
     protected Jt808Message resolve(Jt808Message message) {
         return new LocationInfo(message);
@@ -33,6 +37,7 @@ public class LocationInfoProcess extends AbstractProtocolProcess {
         }
 //        String plate = stringRedisTemplate.opsForValue().get("vehicle:" + msg.getHeader().getTerminalPhone());
 //        log.debug("车辆:{} 的位置信息:{}",plate,msg);
+        kafkaService.send("obd_location" ,msg);
         log.debug("位置信息:{}",msg);
         return msg;
     }
