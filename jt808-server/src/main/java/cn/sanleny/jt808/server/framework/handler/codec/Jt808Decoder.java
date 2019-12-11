@@ -11,6 +11,7 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufUtil;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ReplayingDecoder;
+import io.netty.util.AttributeKey;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
@@ -87,7 +88,7 @@ public class Jt808Decoder extends ReplayingDecoder<DecoderState> {
                     checkpoint(DecoderState.ESCAPE_MESSAGE);
 
                     //将clientId存储到channel的map中
-//                    ctx.channel().attr(AttributeKey.valueOf("clientId")).set(header.getTerminalPhone());
+                    ctx.channel().attr(AttributeKey.valueOf("clientId")).set(header.getTerminalPhone());
 
                     // 消息体数据
                     int messageBodyStartIndex = header.isHasSubPackage() ? 16 : 12;

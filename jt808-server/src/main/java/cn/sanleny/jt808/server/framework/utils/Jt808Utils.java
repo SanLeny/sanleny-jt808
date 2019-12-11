@@ -158,11 +158,14 @@ public class Jt808Utils {
         return  DateUtil.parse(dateStr, "yyMMddHHmmss");
     }
 
-    public static int getFlowId(Channel channel){
-        AtomicInteger currentFlowId = (AtomicInteger) channel.attr(AttributeKey.valueOf("currentFlowId")).get();
-        int flowId = currentFlowId.get();
-        currentFlowId.incrementAndGet();
-        channel.attr(AttributeKey.valueOf("currentFlowId")).set(currentFlowId);
+    public static int getFlowId(Channel channel,String flowType){
+        AtomicInteger flow = (AtomicInteger) channel.attr(AttributeKey.valueOf(flowType)).get();
+        if(flow==null){
+            flow = new AtomicInteger();
+        }
+        int flowId = flow.get();
+        flow.incrementAndGet();
+        channel.attr(AttributeKey.valueOf(flowType)).set(flow);
         return flowId;
     }
 }

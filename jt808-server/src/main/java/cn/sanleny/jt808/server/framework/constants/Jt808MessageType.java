@@ -43,6 +43,10 @@ public enum Jt808MessageType {
     //OBD故障码
     ,OBD_FAULT_CODE(0xF2)
 
+    //查询终端位置
+    ,CLIENT_LOCATION_INFO_DOWN(0x8201)
+    //查询终端属性
+    ,CLIENT_PROPERTY_DOWN(0x8107)
 
     ;
 
