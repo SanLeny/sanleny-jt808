@@ -53,6 +53,16 @@ public class LocationInfo extends Jt808Message {
     @Jt808Field(index = 22,length = 6)
     private Date time;
 
+    //里程，DWord，1/10km，对应车上的里程表读数
+    @Jt808Field(index = 30,length = 4)
+    @Jt808Math(aClass = NumberUtil.class, method = "div")
+    private double mileage;
+
+    //油量，Word，1/10L，对应车上油量表读数
+    @Jt808Field(index = 36,length = 2)
+    @Jt808Math(aClass = NumberUtil.class, method = "div")
+    private double oilMass;
+
     public LocationInfo(){
 
     }

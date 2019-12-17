@@ -21,6 +21,7 @@ sanleny:
         LOGOUT: cn.sanleny.jt808.server.protocol.process.LogoutProcess
         AUTHENTICATION: cn.sanleny.jt808.server.protocol.process.AuthenticationProcess
         LOCATION_INFO_UP: cn.sanleny.jt808.server.protocol.process.LocationInfoProcess
+        LOCATION_INFO_UP_BATCH: cn.sanleny.jt808.server.protocol.process.LocationInfoBatchProcess
         REQUEST_TIME: cn.sanleny.jt808.server.protocol.process.RequestTimeProcess
         DATA_TRANSMISSION_UP: cn.sanleny.jt808.server.protocol.process.DataTransmissionProcess
         DATA_TRANSMISSION_DOWN: cn.sanleny.jt808.server.protocol.process.inverted.ResponseTimeProcess

@@ -28,6 +28,8 @@ public enum Jt808MessageType {
 
     // 位置信息汇报
     ,LOCATION_INFO_UP(0x0200)
+    // 定位数据批量上传
+    ,LOCATION_INFO_UP_BATCH(0x0704)
 
     //终端请求时间
     ,REQUEST_TIME(0x0F00)
