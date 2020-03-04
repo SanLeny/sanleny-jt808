@@ -48,13 +48,19 @@ public class LocationInfoBatchProcess extends AbstractProtocolProcess {
             List<LocationInfo> locationInfos = new ArrayList<>();
             for (int i = 0; i < msg.getDataNumber(); i++) {
                 int tmpLength = 28; //位置基本信息
-                tmpLength += 2; //位置附件信息 附件信息ID(Byte) + 附件信息长度（Byte）
-                int len = parseIntFromBytes(locationData, srcPos + tmpLength - 1, 1);
-                tmpLength += len;
-
-                tmpLength += 2; //位置附件信息 附件信息ID(Byte) + 附件信息长度（Byte）
-                len = parseIntFromBytes(locationData, srcPos + tmpLength - 1, 1); //fuj
-                tmpLength += len;
+                for (;;) {
+                    int fId = parseIntFromBytes(locationData, srcPos + tmpLength, 1);//附加信息 ID Byte
+                    //附加信息ID 范围：[0x01,0xFF]
+                    if(fId == 0x00){
+                        break;
+                    }
+                    tmpLength += 2; //位置附件信息 附件信息ID(Byte) + 附件信息长度（Byte）
+                    int len = parseIntFromBytes(locationData, srcPos + tmpLength - 1, 1);
+                    tmpLength += len;
+                    if(srcPos + tmpLength == locationData.length){
+                        break;
+                    }
+                }
                 byte[] tmp = new byte[tmpLength];
 
                 System.arraycopy(locationData, srcPos, tmp, 0, tmp.length);
@@ -90,9 +96,31 @@ public class LocationInfoBatchProcess extends AbstractProtocolProcess {
         // byte[22-x] 时间(BCD[6]) YY-MM-DD-hh-mm-ss
         // GMT+8 时间，本标准中之后涉及的时间均采用此时区
         msg.setTime(Jt808Utils.generateDate(data,22,6));
-
-        msg.setMileage(NumberUtil.div(parseIntFromBytes(data, 30, 4),10));
-        msg.setOilMass(NumberUtil.div(parseIntFromBytes(data, 36, 2),10));
+        int srcPos = 0;
+        int tmpLength = 28; //位置基本信息
+        for (;;) {
+            if(tmpLength == data.length){
+                break;
+            }
+            int fId = parseIntFromBytes(data, srcPos + tmpLength, 1);//附加信息 ID Byte
+            if(fId == 0x01){
+                tmpLength += 2; //位置附件信息 附件信息ID(Byte) + 附件信息长度（Byte）
+                int len = parseIntFromBytes(data, srcPos + tmpLength -1, 1);//附件信息长度（Byte）
+                msg.setMileage(NumberUtil.div(parseIntFromBytes(data, tmpLength, len),10));
+                tmpLength += len;
+            }else if(fId == 0x02) {
+                tmpLength += 2; //位置附件信息 附件信息ID(Byte) + 附件信息长度（Byte）
+                int len = parseIntFromBytes(data, srcPos + tmpLength -1, 1);//附件信息长度（Byte）
+                msg.setOilMass(NumberUtil.div(parseIntFromBytes(data, tmpLength, len),10));
+                tmpLength += len;
+            }else {
+                tmpLength += 2; //位置附件信息 附件信息ID(Byte) + 附件信息长度（Byte）
+                int len = parseIntFromBytes(data, srcPos + tmpLength -1, 1);//附件信息长度（Byte）
+                tmpLength += len;
+            }
+        }
+//        msg.setMileage(NumberUtil.div(parseIntFromBytes(data, 30, 4),10));
+//        msg.setOilMass(NumberUtil.div(parseIntFromBytes(data, 36, 2),10));
         return msg;
     }
 
