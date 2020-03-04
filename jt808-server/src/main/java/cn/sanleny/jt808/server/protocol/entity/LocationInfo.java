@@ -8,6 +8,7 @@ import cn.sanleny.jt808.server.framework.handler.Jt808Message;
 import lombok.Data;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * @Author: LG
@@ -15,7 +16,7 @@ import java.util.Date;
  * @Version: 1.0
  **/
 @Data
-@Jt808Resolver
+//@Jt808Resolver
 public class LocationInfo extends Jt808Message {
 
     // byte[0-3] 报警标志(DWord(32))
@@ -54,14 +55,18 @@ public class LocationInfo extends Jt808Message {
     private Date time;
 
     //里程，DWord，1/10km，对应车上的里程表读数
-    @Jt808Field(index = 30,length = 4)
-    @Jt808Math(aClass = NumberUtil.class, method = "div")
+//    @Jt808Field(index = 30,length = 4)
+//    @Jt808Math(aClass = NumberUtil.class, method = "div")
     private double mileage;
 
     //油量，Word，1/10L，对应车上油量表读数
-    @Jt808Field(index = 36,length = 2)
-    @Jt808Math(aClass = NumberUtil.class, method = "div")
+//    @Jt808Field(index = 36,length = 2)
+//    @Jt808Math(aClass = NumberUtil.class, method = "div")
     private double oilMass;
+
+    //位置附加信息
+//    @Jt808Field(index = 28,length = -1)
+    private List<LocationExtraInfo> locationExtraInfos;
 
     public LocationInfo(){
 

@@ -6,8 +6,10 @@ import cn.sanleny.jt808.server.framework.constants.Jt808Constants;
 import cn.sanleny.jt808.server.framework.handler.AbstractProtocolProcess;
 import cn.sanleny.jt808.server.framework.handler.Jt808Message;
 import cn.sanleny.jt808.server.framework.utils.Jt808Utils;
+import cn.sanleny.jt808.server.protocol.entity.LocationExtraInfo;
 import cn.sanleny.jt808.server.protocol.entity.LocationInfo;
 import cn.sanleny.jt808.server.protocol.entity.LocationInfoBatch;
+import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -66,7 +68,7 @@ public class LocationInfoBatchProcess extends AbstractProtocolProcess {
 
                 System.arraycopy(locationData, srcPos, tmp, 0, tmp.length);
                 message.setMsgBodyBytes(tmp);
-                LocationInfo info = this.getLocationInfo(tmp);
+                LocationInfo info = this.getLocationInfo(tmp,new LocationInfo());
                 locationInfos.add(info);
                 srcPos += tmpLength;
             }
@@ -78,8 +80,7 @@ public class LocationInfoBatchProcess extends AbstractProtocolProcess {
         return msg;
     }
 
-    private LocationInfo getLocationInfo(byte[] data){
-        LocationInfo msg = new LocationInfo();
+    public static LocationInfo getLocationInfo(byte[] data, LocationInfo msg){
         // 1. byte[0-3] 报警标志(DWORD(32))
         msg.setWarningFlagField(parseIntFromBytes(data, 0, 4));
         // 2. byte[4-7] 状态(DWORD(32))
@@ -99,6 +100,7 @@ public class LocationInfoBatchProcess extends AbstractProtocolProcess {
         msg.setTime(Jt808Utils.generateDate(data,22,6));
         int srcPos = 0;
         int tmpLength = 28; //位置基本信息
+        List<LocationExtraInfo> locationExtraInfos = Lists.newArrayList();
         for (;;) {
             if(tmpLength == data.length){
                 break;
@@ -107,22 +109,35 @@ public class LocationInfoBatchProcess extends AbstractProtocolProcess {
             if(fId == 0x01){
                 tmpLength += 2; //位置附件信息 附件信息ID(Byte) + 附件信息长度（Byte）
                 int len = parseIntFromBytes(data, srcPos + tmpLength -1, 1);//附件信息长度（Byte）
+                getLocationExtraInfos(data, tmpLength, locationExtraInfos, fId, len);
                 msg.setMileage(NumberUtil.div(parseIntFromBytes(data, tmpLength, len),10));
                 tmpLength += len;
             }else if(fId == 0x02) {
                 tmpLength += 2; //位置附件信息 附件信息ID(Byte) + 附件信息长度（Byte）
                 int len = parseIntFromBytes(data, srcPos + tmpLength -1, 1);//附件信息长度（Byte）
+                getLocationExtraInfos(data, tmpLength, locationExtraInfos, fId, len);
                 msg.setOilMass(NumberUtil.div(parseIntFromBytes(data, tmpLength, len),10));
                 tmpLength += len;
             }else {
                 tmpLength += 2; //位置附件信息 附件信息ID(Byte) + 附件信息长度（Byte）
                 int len = parseIntFromBytes(data, srcPos + tmpLength -1, 1);//附件信息长度（Byte）
+                getLocationExtraInfos(data, tmpLength, locationExtraInfos, fId, len);
                 tmpLength += len;
             }
         }
 //        msg.setMileage(NumberUtil.div(parseIntFromBytes(data, 30, 4),10));
 //        msg.setOilMass(NumberUtil.div(parseIntFromBytes(data, 36, 2),10));
         return msg;
+    }
+
+    private static void getLocationExtraInfos(byte[] data, int tmpLength, List<LocationExtraInfo> locationExtraInfos, int fId, int len) {
+        LocationExtraInfo extraInfo = new LocationExtraInfo();
+        extraInfo.setId(fId);
+        extraInfo.setLength(len);
+        byte[] tmp = new byte[len];
+        System.arraycopy(data, tmpLength, tmp, 0, len);
+        extraInfo.setBytesValue(tmp);
+        locationExtraInfos.add(extraInfo);
     }
 
     @Override

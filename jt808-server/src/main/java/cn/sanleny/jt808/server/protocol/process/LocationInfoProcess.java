@@ -1,13 +1,15 @@
 package cn.sanleny.jt808.server.protocol.process;
 
 import cn.sanleny.jt808.server.common.service.KafkaService;
-import cn.sanleny.jt808.server.framework.handler.Jt808Message;
-import cn.sanleny.jt808.server.protocol.entity.LocationInfo;
 import cn.sanleny.jt808.server.framework.constants.Jt808Constants;
 import cn.sanleny.jt808.server.framework.handler.AbstractProtocolProcess;
+import cn.sanleny.jt808.server.framework.handler.Jt808Message;
+import cn.sanleny.jt808.server.protocol.entity.LocationInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
+
+import static cn.sanleny.jt808.server.protocol.process.LocationInfoBatchProcess.getLocationInfo;
 
 /**
  * 【0x0200】位置信息汇报
@@ -26,7 +28,8 @@ public class LocationInfoProcess extends AbstractProtocolProcess {
 
     @Override
     protected Jt808Message resolve(Jt808Message message) {
-        return new LocationInfo(message);
+        LocationInfo msg = new LocationInfo(message);
+        return getLocationInfo(message.getMsgBodyBytes(),msg);
     }
 
     @Override
