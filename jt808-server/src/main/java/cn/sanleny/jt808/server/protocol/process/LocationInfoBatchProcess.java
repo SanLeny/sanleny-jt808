@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static cn.sanleny.jt808.server.framework.utils.Jt808Utils.parseIntFromBytes;
+import static cn.sanleny.jt808.server.protocol.process.LocationInfoProcess.checkLongLat;
 
 /**
  * 定位数据批量上传
@@ -131,6 +132,10 @@ public class LocationInfoBatchProcess extends AbstractProtocolProcess {
             return msg;
         }
         for (LocationInfo locationInfo : msg.getLocationInfos()) {
+            if(!checkLongLat(locationInfo)){
+                log.debug(">>> 经纬度范围错误>>>terminalPhone:{},位置信息:{}",msg.getHeader().getTerminalPhone(),msg);
+                continue;
+            }
             locationInfo.setHeader(message.getHeader());
             kafkaService.send("obd_location" ,locationInfo);
         }
